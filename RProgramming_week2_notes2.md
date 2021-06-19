@@ -1,6 +1,8 @@
 ---
 title: "Coursera R programming week2 notes2"
 output: html_notebook
+editor_options: 
+  chunk_output_type: inline
 ---
 2021/06/19 SAT
 
@@ -54,8 +56,7 @@ ls(environment(nLL))
 ```
 看不懂，真不知道在讲啥 TAT
 mark 一下网址： https://www.coursera.org/learn/r-programming/lecture/Jm1s1/scoping-rules-optimization-example-optional
-
-
+文字版本：https://bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html#application-optimization
 
 Coding Standards
 1) Always use text files/ text editor
@@ -101,7 +102,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2021-06-19 11:04:16 CST"
+## [1] "2021-06-19 13:26:22 CST"
 ```
 
 
@@ -190,4 +191,45 @@ n - m
 ```
 ## Time difference of 13 hours
 ```
+? What are free variables
+
+```r
+f <- function(){
+    x+1
+}
+f()
+```
+
+```
+## [1] "2012-03-02"
+```
+Here x is a free variable since its value is not defined within function f.
+references: https://bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html
+
+
+```r
+ f <- function(x, y) {
+         x^2 + y / z
+ }
+f(2,3)
+```
+
+```
+## [1] 7
+```
+
+```r
+z <- 1
+f(2,3)
+```
+
+```
+## [1] 7
+```
+This function has 2 formal arguments x and y. In the body of the function there is another symbol z. In this case z is called a free variable.
+
+The scoping rules of a language determine how values are assigned to free variables. Free variables are not formal arguments and are not local variables (assigned insided the function body).
+
+Lexical scoping in R has consequences beyond how free variables are looked up. In particular, it’s the reason that all objects must be stored in memory in R. This is because all functions must carry a pointer to their respective defining environments, which could be anywhere. In the S language (R’s close cousin), free variables are always looked up in the global workspace, so everything can be stored on the disk because the “defining environment” of all functions is the same.
+
 
