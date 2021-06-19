@@ -1,0 +1,58 @@
+---
+title: "Coursera R programming week2 notes2"
+output: html_notebook
+---
+2021/06/19 SAT
+```{r}
+y <-10
+f <- function(x){
+    y <- 2
+    y^2 + g(x)
+}
+g <- function(x) {
+    x*y
+}
+f(3)
+```
+
+This shows the difference between Lexical Scoping and Dynamic Scopping.
+
+```{r}
+
+```
+
+Consequences of Lexical Scoping
+1) In R, all objects must be stored in memory.
+2) All functions must carry a pointer to their respective defining environments, which could be anywhere.
+3) In S-PLUS, free variables are always looked up in the global workspace, so everything can be stored on the disk because the "defining environment" of all functions is the same.
+
+Maximizing a Normal Likelihood
+```{r}
+make.NegLogLik <- function(data, fixed = c(FALSE, FALSE)){
+        params <- fixed
+        function(p){
+              params[!fixed] <- p
+              mu <- params[1]
+              sigma <- params[2]
+              a <- -0.5*length(data)*log(2*pi*sigma^2)
+              b <- -0.5*sum((data-mu)^2 / (sigma^2))
+              -(a+b)
+        }
+}
+set.seed(1); normals <- rnorm(100, 1, 2)
+nLL <- make.NegLogLik(normals)
+View(nLL)
+ls(environment(nLL))
+```
+看不懂，真不知道在讲啥 TAT
+mark 一下网址： https://www.coursera.org/learn/r-programming/lecture/Jm1s1/scoping-rules-optimization-example-optional
+
+
+
+Coding Standards
+1) Always use text files/ text editor
+2) Indenting is IMPORTANT -> imporves readability
+    Fixing line length(80 columns) prevents lots of nesting and vering long functions
+    Suggested: Indents of 4 spaces at minimun; 8 spaces ideal
+
+3)Limit
