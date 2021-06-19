@@ -1,8 +1,6 @@
 ---
 title: "Coursera R programming week2 notes2"
 output: html_notebook
-editor_options: 
-  chunk_output_type: inline
 ---
 2021/06/19 SAT
 
@@ -102,7 +100,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2021-06-19 13:26:22 CST"
+## [1] "2021-06-19 14:28:48 CST"
 ```
 
 
@@ -112,8 +110,8 @@ names(unclass(p))
 ```
 
 ```
-## [1] "sec"   "min"   "hour"  "mday"  "mon"   "year"  "wday" 
-## [8] "yday"  "isdst"
+## [1] "sec"   "min"   "hour"  "mday"  "mon"   "year"  "wday"  "yday" 
+## [9] "isdst"
 ```
 
 ```r
@@ -231,5 +229,22 @@ This function has 2 formal arguments x and y. In the body of the function there 
 The scoping rules of a language determine how values are assigned to free variables. Free variables are not formal arguments and are not local variables (assigned insided the function body).
 
 Lexical scoping in R has consequences beyond how free variables are looked up. In particular, it’s the reason that all objects must be stored in memory in R. This is because all functions must carry a pointer to their respective defining environments, which could be anywhere. In the S language (R’s close cousin), free variables are always looked up in the global workspace, so everything can be stored on the disk because the “defining environment” of all functions is the same.
+
+批量读取文件时， 文件名通常为“001.csv”，“002.csv”，如何补齐0？
+参考资料：R语言数字格式 https://blog.csdn.net/weixin_40628687/article/details/88866178
+
+
+```r
+setwd("/Users/zixuanyu/R_Projects/datasciencecoursera/specdata")
+cal_vec <- c()
+pollutant <- "nitrate"  #or "sulfate"
+for (i in 1:100){
+        idx = sprintf("%03d",i)  #此处如果改成%04d 就会补全成0001，0002，etc
+        filenmae <- paste(idx,".csv", sep = "")
+        df <- read.csv(filenmae) %>% data.frame()
+        cal_vec <- c(cal_vec, df[,pollutant])
+}
+output_mean <- mean(cal_vec, na.rm = TRUE)
+```
 
 
