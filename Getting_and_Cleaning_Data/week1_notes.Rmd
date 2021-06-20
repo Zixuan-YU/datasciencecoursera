@@ -1,0 +1,252 @@
+---
+title: "Week1 Notes"
+output: html_notebook
+---
+What a Code Book should contain
+1) information about variables
+    in the data set not contained in the tidy data
+2) Information about the summary choices made
+3) Information about the experimental study design used
+
+A common format: Word/text file
+There should be a section called "Study Design" that has a through description of how you collected data.
+
+The instruction list
+- Ideally in R script
+- The input is raw data
+- The output is the processed, tidy data
+- There are no parameters to the script
+
+
+Get/set working directory
+-In Mac OS: 
+```{r}
+setwd("./data")
+```
+
+-In Windows 
+```{r}
+setwd("C:\\Users\\Andrew\\Downloads")
+```
+
+Checking for and creating directories
+```{r}
+if (!file.exists("data")){
+    dir.create("data")
+}
+```
+
+Getting data from the Internet
+```{r}
+download.file(url = , destfile = , )
+```
+
+An example of downloading datat form baltimorecity website
+```{r}
+fileUrl <- "https://data.baltimorecity.gov/api/views/dz54-2aru/rows.csv?accessType=DOWNLOAD"
+download.file(fileUrl, destfile = "./data/cameras.csv", method = "curl") #we only need to set the method to curl in MAC, while in Windows the HTTPS are the default method
+# It doesn't work because the url does not work!
+list.files("./data")
+dateDownloaded <- date()
+```
+
+
+How to open local file
+- I downloaded the Baltimore fixed camera dataset mannually and save it in the file in "./data/Fixed_Speed_Cameras.csv"
+
+Now try to read it!
+```{r}
+cameraData <- read.csv("./data/Fixed_Speed_Cameras.csv")
+head(cameraData)
+```
+Some important parameters
+quote - sometimes we should set quoted=""
+na.strings - set the character that repressent a missing value
+nrows - how many rows to read
+skip - number of lines to skip befere starting to read
+
+
+read Excel files
+```{r}
+library(xlsx)
+camrraData2 <- read.xlsx("./data/xxx.xlsx",sheetIndex = 1, header = TRUE)
+```
+- read.xlxs2 is much faster than read.xlsx but for reading subsets of rows may be slightly unstable
+
+- XLConnect package has more options for writing and manipulating Excel files
+- XLCnonnect cignette is a good place to start for that package
+
+
+
+Reading XML
+
+1)Tags, elements and attributes
+  Tages - Start tages <section>
+        - End tages </section>
+        - Empty tags<line-break />
+  Elements
+        - <Greeting> Hello, world </Greeting>
+  Attributes are componets of the label
+        - <img scr = "jeff.jpg"> alt="instructor"/>
+        - <step number ="3"> Connect A to B. </step>
+        
+```{r}
+library(XML)
+fileUrl <- "http://www.w3schools.com/xml/simple/xml"
+doc <-xmlTreeParse(fileUrl, useInternalNodes = TRUE)
+rootNode <- xmlRoot(doc)
+
+#Progarammatically extract parts of the file
+xmlSApply(rootNode, xmlValue)
+```
+Get the items on the menu and prices
+```{r}
+xpathApply(rootNode"//name",xmlValue)
+xpathApply(rootNode"//price",xmlValue)
+```
+
+
+```{r}
+myUrl <- "https://www.espn.com/nfl/team/_/name/bal/baltimore-ravens"
+doc <- htmlTreeParse(myUrl, useInternal = TRUE)
+scores <- xpathSApply(doc, "//li[@class='score']",xmlValue)
+teams <- xpathSApply(doc, "//li[@class='team-name']",xmlValue)
+```
+
+
+Reading Javascript Object Notation(JSON)
+- Lightweight data storage
+```{r}
+library(jsonlite)
+jsonDATA <- fromJSON("https://api.github.com/users/Zixuan-YU/repos")
+#names(jsonDATA)
+names(jsonDATA$owner)
+jsonDATA$owner$login
+```
+Writing data frames to JSON
+```{r}
+myjson <- toJSON(iris, pretty = TRUE)
+cat(myjson)
+```
+
+Convert back to JSON
+```{r}
+iris2 <- fromJSON(myjson)
+head(iris2)
+```
+
+More informations about JSON:
+1) http://www.json.org/
+2) tutorail: http://www.r-bloggers.com/new-package-jsonlite-a-smarter-json-encoderdecoder/
+3) jsonlite vignette
+
+
+
+
+
+Data.table 
+1) written in C and much faster
+2) all functions accept data.frame work on data.table
+```{r}
+library(data.table)
+DT = data.table(x=rnorm(9), y=rep(c("a","b","c"),each=3), z=rnorm(9))
+head(DT,3)
+```
+```{r}
+tables()
+```
+#see all the data tables in memory
+
+subsetting rows
+```{r}
+DT[2,]
+```
+subsetting rows
+```{r}
+DT[c(2,3)]
+#如果不加逗号，就是subsetting based on rows
+#此处需要注意！与data frame不同
+```
+subsetting columns!! DIFFERENT
+```{r}
+{
+  x = 1
+  y = 2
+}
+k = {print(10); 5}
+```
+```{r}
+print(k)
+```
+
+Calculating values for variables with expressions
+```{r}
+DT <- data.table(x=rnorm(9), y=rep(c("a","b","c"),each=3), z = rnorm(9))
+DT
+DT[,list(mean(x),sum(z))]
+DT[,table(y)]
+```
+Adding new columns, using ":="
+```{r}
+DT
+DT[,w:=z^2]
+```
+```{r}
+DT2 <- DT
+```
+
+Multiple operations
+```{r}
+DT[,m:={tmp <-(x+z); log2(tmp+5)}]
+```
+
+plyr like operations
+```{r}
+DT[,a:=x>0]
+DT[,b:=mean(x+w),by=a]
+```
+
+
+Sepcial Variables
+.N An integer, lenth 1, containing the number
+```{r}
+set.seed(123);
+DT <- data.table(x=sample(letters[1:3],1E5,TRUE))
+DT[, .N, by=x]
+```
+
+
+Keys
+```{r}
+DT <- data.table(x=rep(c("a","b","c"),each=100), y=rnorm(300))
+setkey(DT, x)
+DT['a']
+```
+
+Joins
+```{r}
+DT1 <- data.table(x=c("a","a","b","dt1"),y=1:4)
+DT2 <- data.table(x=c("a","b","dt2"),z=5:7)
+setkey(DT1, x)
+setkey(DT2, x)
+merge(DT1,DT2)
+```
+Fast Reading
+```{r}
+big_df <- data.frame(x= rnorm(1E6), y=rnorm(1E6))
+file <- tempfile()
+write.table(big_df, file = file, row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE)
+system.time(fread(file))
+```
+```{r}
+system.time(read.table(file, header = TRUE, sep = "\t"))
+```
+
+
+the differences with df and dt: https://stackoverflow.com/questions/13618488/what-you-can-do-with-a-data-frame-that-you-cant-with-a-data-table
+
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
