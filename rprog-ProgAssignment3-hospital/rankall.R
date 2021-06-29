@@ -2,6 +2,8 @@
 ##参考（2） https://gist.github.com/mGalarnyk/21695638e94965640c35667e8683642c
 
 rm(list = ls())
+setwd("~/R_Projects/datasciencecoursera/rprog-ProgAssignment3-hospital")
+library(dplyr)
 rankall <- function(outcome, num = "best"){
   ## Read outcome data
   data <- read.csv("outcome-of-care-measures.csv")
@@ -48,3 +50,14 @@ rankall <- function(outcome, num = "best"){
   }
 stateRanks
 }
+
+
+r <- rankall("heart attack", 4)
+as.character(subset(r, state == "HI")$hospital)
+
+r <- rankall("pneumonia", "worst")
+
+r[r$state=="NJ",]
+
+r <- rankall("heart failure", 10)
+as.character(subset(r, state == "NV")$hospital)
