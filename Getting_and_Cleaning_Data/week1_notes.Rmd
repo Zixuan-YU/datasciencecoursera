@@ -17,6 +17,11 @@ The instruction list
 - The output is the processed, tidy data
 - There are no parameters to the script
 
+The Three Rules of Tidy Data
+-Each variable must have its own column.
+-Each observation must have its own row.
+-Each value must have its own cell.
+
 
 Get/set working directory
 -In Mac OS: 
@@ -107,7 +112,7 @@ xpathApply(rootNode"//price",xmlValue)
 
 
 ```{r}
-myUrl <- "https://www.espn.com/nfl/team/_/name/bal/baltimore-ravens"
+myUrl <- "http://www.espn.com/nfl/team/_/name/bal/baltimore-ravens"
 doc <- htmlTreeParse(myUrl, useInternal = TRUE)
 scores <- xpathSApply(doc, "//li[@class='score']",xmlValue)
 teams <- xpathSApply(doc, "//li[@class='team-name']",xmlValue)
