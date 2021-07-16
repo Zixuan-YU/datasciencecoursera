@@ -43,10 +43,7 @@ count(res[res$list_zip=="21231",])
 
 
 #https://www.cnblogs.com/franose/p/6839505.html 这是一些资料
-
-
 xml.file <- xmlParse( file = "http://www.w3schools.com/xml/simple.xml")
-
 names    <- xpathSApply( doc  = xml.file
                          , path = "//name"
                          , fun  = xmlValue
@@ -69,4 +66,5 @@ B <- system.time(DT[,mean(pwgtp15),by=SEX])
 C <- system.time(mean(DT$pwgtp15,by=DT$SEX)) X
 D <- system.time(tapply(DT$pwgtp15,DT$SEX,mean)) XX
 E <- system.time(sapply(split(DT$pwgtp15,DT$SEX),mean)) X
+#这道题我觉得非常迷惑，目前还没有试出答案
 
