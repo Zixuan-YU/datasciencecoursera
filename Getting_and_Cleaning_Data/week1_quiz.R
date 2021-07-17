@@ -1,4 +1,5 @@
 library(dplyr)
+setwd("~/R_Projects/datasciencecoursera/Getting_and_Cleaning_Data")
 download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv", destfile = "Community_Survey.csv", method = "curl")
 CS_Data <- read.csv("Community_Survey.csv")
 #Data Dictionary: https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FPUMSDataDict06.pdf
@@ -22,7 +23,7 @@ dat <- read.xlsx("Gas.xlsx",sheetIndex = 1, header = FALSE)
 dat <- dat[18:23,7:15]
 colnames(dat) <- dat[1,]
 dat <- dat[-1,]
-sum(dat$Zip*dat$Ext,na.rm=T)
+sum(as.numeric(dat$Zip)*as.numeric(dat$Ext),na.rm=T)
 #????
 
 #Q4:Read the XML data on Baltimore restaurant, How many restaurants have zipcode 21231? 
@@ -62,9 +63,9 @@ DT <-fread("CS_2016.csv")
 #broken down by sex. Using the data.table package,
 #which will deliver the fastest user time? 
 A <- rowMeans(DT)[DT$SEX==1]; rowMeans(DT)[DT$SEX==2]
-B <- system.time(DT[,mean(pwgtp15),by=SEX])
-C <- system.time(mean(DT$pwgtp15,by=DT$SEX)) X
-D <- system.time(tapply(DT$pwgtp15,DT$SEX,mean)) XX
-E <- system.time(sapply(split(DT$pwgtp15,DT$SEX),mean)) X
+B <- system.time(DT[,mean(pwgtp15),by=SEX]) #答案是这个最快 but I don't know why
+C <- system.time(mean(DT$pwgtp15,by=DT$SEX)) 
+D <- system.time(tapply(DT$pwgtp15,DT$SEX,mean)) 
+E <- system.time(sapply(split(DT$pwgtp15,DT$SEX),mean)) 
 #这道题我觉得非常迷惑，目前还没有试出答案
 
