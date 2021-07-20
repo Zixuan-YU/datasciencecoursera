@@ -22,3 +22,12 @@ which(agricultureLogical)
 #Use the parameter native=TRUE. 
 #What are the 30th and 80th quantiles of the resulting data? (some Linux systems may produce an answer 638 different for the 30th quantile)
 install.packages("jpeg")
+
+
+#Q3:
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv",destfile = "gdp.csv",method = "curl")
+gdp <- read.csv("gdp.csv") %>% data.frame()
+gdp <- gdp[5:nrow(gdp),c(1,2,4,5)]
+colnames(gdp) <- c("Country","Economy","millions of US dolars")
+  
+  
