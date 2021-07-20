@@ -1,4 +1,41 @@
 setwd("~/R_Projects/datasciencecoursera/Getting_and_Cleaning_Data")
+##Q1: Register an application with the Github API here https://github.com/settings/applications. 
+# Access the API to get information on your instructors repositories (hint: this is the url you want "https://api.github.com/users/jtleek/repos").
+# Use this data to find the time that the datasharing repo was created. What time was it created?
+# see https://medium.com/@GalarnykMichael/accessing-data-from-github-api-using-r-3633fb62cb08#.z0z07ph5h for more details.
+
+# references: https://gist.github.com/mGalarnyk/ab0b1744fc718effa2759b2a1f17d60e
+#install.packages("jsonlite")
+library(jsonlite)
+install.packages("httpuv")
+library(httpuv)
+#install.packages("httr")
+library(httr)
+
+# Can be github, linkedin etc depending on application
+oauth_endpoints("github")
+
+# Change based on your appname, key, and secret 
+myapp <- oauth_app(appname = "mygitapp",
+                   key = "7812238ae089755748d1",
+                   secret = "471229c4d4c9885c20cd0d029d7651e632f17a8c")
+# Get OAuth credentials
+github_token <- oauth2.0_token(oauth_endpoints("github"), myapp)
+# Use API
+gtoken <- config(token = github_token)
+req <- GET("https://api.github.com/users/jtleek/repos", gtoken)
+
+# Take action on http error
+stop_for_status(req)
+
+# Extract content from a request
+json1 = content(req)
+
+# Convert to a data.frame
+gitDF = jsonlite::fromJSON(jsonlite::toJSON(json1))
+
+# Subset data.frame
+gitDF[gitDF$full_name == "jtleek/datasharing", "created_at"] 
 
 
 #Q2
