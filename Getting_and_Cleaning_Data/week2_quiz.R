@@ -67,5 +67,35 @@ sqldf("select DISTINCT AGEP from acs LIMIT 10")
 #Q4: How many characters are in the 10th, 20th, 30th and 100th lines of HTML from this page:
 # http://biostat.jhsph.edu/~jleek/contact.html
 # (Hint: the nchar() function in R may be helpful)
+library(XML);library(RCurl)
+url.j <- "http://biostat.jhsph.edu/~jleek/contact.html"
+#curl_data <- getURL(url.j)
+
+conn <- url(url.j)
+htmlCode <- readLines(conn)
+close(conn)
+lst.n = vector()
+for (i in c(10,20,30,100)){
+  n <- nchar(htmlCode[i])
+  lst.n <- c(lst.n,n)
+}
+
+#About append
+x <- rep(10:15)
+gfg <- append(x, 1, 1) #Add "1" after the first element
 
 
+#Q5: Question 5
+#Read this data set into R and report the sum of the numbers in the fourth of the nine columns.
+#https://d396qusza40orc.cloudfront.net/getdata%2Fwksst8110.for
+#Original source of the data: http://www.cpc.ncep.noaa.gov/data/indices/wksst8110.for
+#(Hint this is a fixed width file format)
+
+#Hint about fixed width file: https://riptutorial.com/r/example/31447/importing-fixed-width-files
+library(readr)
+library(dplyr)
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fwksst8110.for",destfile = "SST.for",method = "curl")
+sst <- read.fwf("SST.for", skip=4, widths=c(12, 7, 4, 9, 4, 9, 4, 9, 4))
+#Speed comparison: readr::read_fwf() was ~2x faster than utils::read.fwf ().
+sum(sst[,4])
+s <- apply(sst$V2,2,sum)
