@@ -98,4 +98,4 @@ download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fwksst8110.for",de
 sst <- read.fwf("SST.for", skip=4, widths=c(12, 7, 4, 9, 4, 9, 4, 9, 4))
 #Speed comparison: readr::read_fwf() was ~2x faster than utils::read.fwf ().
 sum(sst[,4])
-s <- apply(sst$V2,2,sum)
+s <- apply(sst,2,sum)
