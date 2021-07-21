@@ -23,7 +23,9 @@ which(agricultureLogical)
 #What are the 30th and 80th quantiles of the resulting data? (some Linux systems may produce an answer 638 different for the 30th quantile)
 install.packages("jpeg")
 library(jpeg)
-jpeg.j <- readJPEG("https://d396qusza40orc.cloudfront.net/getdata%2Fjeff.jpg", native = TRUE)
+jpeg.j <- readJPEG("https://d396qusza40orc.cloudfront.net/getdata%2Fjeff.jpg", native = FALSE)
+img <- readJPEG(system.file("img", "Rlogo.jpg", package="jpeg"))
+
 
 #Q3:
 library(dplyr)
@@ -57,8 +59,23 @@ DF <- read.csv("xxx.csv",
                colClasses = 'num.with.commas','factor','character','numeric','num.with.commas')
 
 match.gdp <- match.gdp[!is.na(as.numeric(match.gdp$Economy)),]
-rank.gdp <- match.gdp[order(as.numeric(match.gdp$Economy), decreasing = TRUE),]  
+#order 有一点复杂，用arrange更快一些
+#rank.gdp <- match.gdp[order(as.numeric(match.gdp$Economy), dec reasing = TRUE),]  
+rank.gdp <- match.gdp %>% arrange(desc(Economy))
+aa <- rank.gdp %>% mutate(Group = as.numeric(Economy)*2)
 
+subgroup <- edu[,c(1,3)]
+gdp.subgroup <- merge(rank.gdp, subgroup, by.x = "Country", by.y = "CountryCode")
+#分组求平均值用tapply
+tapply(as.numeric(gdp.subgroup$Economy), gdp.subgroup$Income.Group, mean)
 
-
-
+#Q5: Cut the GDP ranking into 5 separate quantile groups. 
+#Make a table versus Income.Group. How many countries
+#are Lower middle income but among the 38 nations with highest GDP?
+gdp.subgroup <- gdp.subgroup %>% arrange(as.numeric(Economy))
+top38 <- gdp.subgroup[1:38,]
+LMI.countries <- gdp.subgroup %>% filter(Income.Group == "Lower middle income") %>% select(Country) 
+LMI.countries %in% gdp.subgroup[1:38,1]
+#Inner Join
+#参考： https://r-coder.com/merge-r/
+merge(LMI.countries, top38, by.x = "Country", by.y = "Country" )
