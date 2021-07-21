@@ -22,12 +22,43 @@ which(agricultureLogical)
 #Use the parameter native=TRUE. 
 #What are the 30th and 80th quantiles of the resulting data? (some Linux systems may produce an answer 638 different for the 30th quantile)
 install.packages("jpeg")
-
+library(jpeg)
+jpeg.j <- readJPEG("https://d396qusza40orc.cloudfront.net/getdata%2Fjeff.jpg", native = TRUE)
 
 #Q3:
+library(dplyr)
 download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv",destfile = "gdp.csv",method = "curl")
 gdp <- read.csv("gdp.csv") %>% data.frame()
 gdp <- gdp[5:nrow(gdp),c(1,2,4,5)]
-colnames(gdp) <- c("Country","Economy","millions of US dolars")
-  
-  
+colnames(gdp) <- c("Country","Economy","whole_name","Mdolars")
+
+#Load the educational data from this data set:
+#https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv
+download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv", destfile = "edu.csv", method = "curl")
+edu <- read.csv("edu.csv") %>% data.frame  
+match.gdp <- gdp[gdp$Country %in% edu$CountryCode,] 
+#gdp2 <- gdp %>% mutate(across(where(is.character),~na_if(.,"")))
+
+
+
+y <- c("1,200","20,000","100","12,111")
+as.numeric(gsub(",","", y))
+gsub(",","",as.numeric(match.gdp$Mdolars))
+as.numeric(gsub("([0-9]+)\\,([0-9])","\\1\\2", gdp$Mdolars)) 
+
+#您可以让read.table或read.csv半自动为您完成此转换。
+#首先创建一个新的类定义，然后创建一个转换函数，
+#并使用setAs函数将其设置为" as"方法，如下所示
+#references:https://www.codenong.com/1523126/
+setClass("num.with.commas")
+setAs("character","num.with.commas",
+      function(from) as.numeric(gsub(",","",from)))
+DF <- read.csv("xxx.csv",
+               colClasses = 'num.with.commas','factor','character','numeric','num.with.commas')
+
+match.gdp <- match.gdp[!is.na(as.numeric(match.gdp$Economy)),]
+rank.gdp <- match.gdp[order(as.numeric(match.gdp$Economy), decreasing = TRUE),]  
+
+
+
+
