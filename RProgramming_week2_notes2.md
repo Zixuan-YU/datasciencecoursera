@@ -1,6 +1,8 @@
 ---
 title: "Coursera R programming week2 notes2"
 output: html_notebook
+editor_options: 
+  chunk_output_type: inline
 ---
 2021/06/19 SAT
 
