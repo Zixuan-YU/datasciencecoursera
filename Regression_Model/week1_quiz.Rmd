@@ -34,10 +34,10 @@ reg3$coefficients
 
 ## Question 4
 Consider data with an outcome (Y) and a predictor (X). The standard deviation of the predictor is one half that of the outcome. The correlation between the two variables is .5. What value would the slope coefficient for the regression model with YY as the outcome and XX as the predictor?  
+```{r}
 
 
-
-
+```
 
 
 
