@@ -2,7 +2,7 @@
 title: "week4_quiz"
 author: "Zixuan Yu"
 date: "2/26/2022"
-output: html_document
+output: md_document
 ---
 
 ```{r}

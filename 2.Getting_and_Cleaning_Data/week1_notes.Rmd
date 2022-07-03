@@ -1,6 +1,7 @@
 ---
 title: "Week1 Notes"
-output: html_notebook
+author: "Zixuan Yu"
+output: md_document
 ---
 What a Code Book should contain
 1) information about variables
@@ -25,29 +26,29 @@ The Three Rules of Tidy Data
 
 Get/set working directory
 -In Mac OS: 
-```{r}
+```{r eval=FALSE}
 setwd("./data")
 ```
 
 -In Windows 
-```{r}
+```{r eval=FALSE}
 setwd("C:\\Users\\Andrew\\Downloads")
 ```
 
 Checking for and creating directories
-```{r}
+```{r eval=FALSE}
 if (!file.exists("data")){
     dir.create("data")
 }
 ```
 
 Getting data from the Internet
-```{r}
+```{r eval=FALSE}
 download.file(url = , destfile = , )
 ```
 
 An example of downloading datat form baltimorecity website
-```{r}
+```{r eval=FALSE}
 fileUrl <- "https://data.baltimorecity.gov/api/views/dz54-2aru/rows.csv?accessType=DOWNLOAD"
 download.file(fileUrl, destfile = "./data/cameras.csv", method = "curl") #we only need to set the method to curl in MAC, while in Windows the HTTPS are the default method
 # It doesn't work because the url does not work!
@@ -60,7 +61,7 @@ How to open local file
 - I downloaded the Baltimore fixed camera dataset mannually and save it in the file in "./data/Fixed_Speed_Cameras.csv"
 
 Now try to read it!
-```{r}
+```{r eval=FALSE}
 cameraData <- read.csv("./data/Fixed_Speed_Cameras.csv")
 head(cameraData)
 ```
@@ -72,7 +73,7 @@ skip - number of lines to skip befere starting to read
 
 
 read Excel files
-```{r}
+```{r eval=FALSE}
 library(xlsx)
 camrraData2 <- read.xlsx("./data/xxx.xlsx",sheetIndex = 1, header = TRUE)
 ```
@@ -95,7 +96,7 @@ Reading XML
         - <img scr = "jeff.jpg"> alt="instructor"/>
         - <step number ="3"> Connect A to B. </step>
         
-```{r}
+```{r eval=FALSE}
 library(XML)
 fileUrl <- "http://www.w3schools.com/xml/simple/xml"
 doc <-xmlTreeParse(fileUrl, useInternalNodes = TRUE)
@@ -104,14 +105,14 @@ rootNode <- xmlRoot(doc)
 #Progarammatically extract parts of the file
 xmlSApply(rootNode, xmlValue)
 ```
-Get the items on the menu and prices
-```{r}
+Get the items on the menu and prices  
+```{r eval=FALSE}
 xpathApply(rootNode"//name",xmlValue)
 xpathApply(rootNode"//price",xmlValue)
 ```
 
 
-```{r}
+```{r eval=FALSE} 
 myUrl <- "http://www.espn.com/nfl/team/_/name/bal/baltimore-ravens"
 doc <- htmlTreeParse(myUrl, useInternal = TRUE)
 scores <- xpathSApply(doc, "//li[@class='score']",xmlValue)
@@ -119,8 +120,8 @@ teams <- xpathSApply(doc, "//li[@class='team-name']",xmlValue)
 ```
 
 
-Reading Javascript Object Notation(JSON)
-- Lightweight data storage
+Reading Javascript Object Notation(JSON)  
+- Lightweight data storage 
 ```{r}
 library(jsonlite)
 jsonDATA <- fromJSON("https://api.github.com/users/Zixuan-YU/repos")
@@ -128,7 +129,7 @@ jsonDATA <- fromJSON("https://api.github.com/users/Zixuan-YU/repos")
 names(jsonDATA$owner)
 jsonDATA$owner$login
 ```
-Writing data frames to JSON
+Writing data frames to JSON  
 ```{r}
 myjson <- toJSON(iris, pretty = TRUE)
 cat(myjson)

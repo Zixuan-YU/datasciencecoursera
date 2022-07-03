@@ -1,0 +1,142 @@
+---
+title: "EDA_week1_project1_power_consumption"
+author: "Zixuan Yu"
+date: "7/2/2022"
+output: md_document
+---
+When loading the dataset into R, please consider the following:
+
+- The dataset has 2,075,259 rows and 9 columns. First calculate a rough estimate of how much memory the dataset will require in memory before reading into R. Make sure your computer has enough memory (most modern computers should be fine).
+
+- We will only be using data from the dates 2007-02-01 and 2007-02-02. One alternative is to read the data from just those dates rather than reading in the entire dataset and subsetting to those dates.
+
+- You may find it useful to convert the Date and Time variables to Date/Time classes in R using the \color{red}{\verb|strptime()|}strptime()  and \color{red}{\verb|as.Date()|}as.Date() functions.
+
+- Note that in this dataset missing values are coded as \color{red}{\verb|?|}?.
+
+```{r}
+power <- read.table('C:/REPO/datasciencecoursera/4.Exploratory_Data_Analysis/exdata_data_household_power_consumption/household_power_consumption.txt', sep = ";", header = T,na.strings="?",colClasses = c(character(),
+                                         character(),
+                                         numeric(),
+                                         numeric(),
+                                         numeric(),
+                                         numeric(),
+                                         numeric(),
+                                         numeric(),
+                                         numeric()))
+str(power)
+```
+```{r}
+library(lubridate)
+library(dplyr)
+
+power <- power %>% mutate(exact_time = paste(Date, Time, sep=" "))
+head(power$exact_time)
+```
+
+```{r}
+library(dplyr)
+library(tidyverse)
+power$exact_time2 <- lubridate::dmy_hms(power$exact_time)
+power$datee <- dmy(power$Date)
+#dat <- power %>% filter(lubridate::date(exact_time2) %in% c(as.Date("2007-02-01"),as.Date("2007-02-02")))
+dat <- power %>% filter((datee >= "2007-02-01") & (datee <= "2007-02-02"))
+head(dat)
+```
+
+
+```{r Plot1}
+#png("plot1.png")
+#dat$Global_active_power <- as.numeric(dat$Global_active_power)
+hist(as.numeric(dat$Global_active_power),
+     main = "Global Active Power",
+     xlab = "Global Active Power (kilowatts)",
+     xlim = c(0,6),
+     col = "red")
+#dev.off()
+# breaks = c(0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0),
+```
+
+
+```{r Plot2}
+#png("plot2.png")
+    plot(dat$exact_time2,
+         dat$Global_active_power,
+         type="l",
+         xlab="",
+         ylab="Global Active Power (kW)")
+#dev.off()
+```
+
+```{r Plot3}
+#png("plot3.png")
+    plot(dat$exact_time2,
+         dat$Sub_metering_1,
+         type="l",
+         xlab="",
+         ylab="Energy sub metering")
+    lines(dat$exact_time2,
+         dat$Sub_metering_2,
+         type="l",
+         col = "red")
+    lines(dat$exact_time2,
+         dat$Sub_metering_3,
+         type="l",
+         col = "blue")
+    legend(x = "topright",
+           legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),
+           lty = 1,
+           lwd = 2.5,
+           col = c("black","red","blue"))
+#dev.off()
+```
+```{r Plot4}
+#png("plot4.png")
+
+par(mfrow = c(2,2))
+    plot(dat$exact_time2,
+         dat$Global_active_power,
+         type="l",
+         xlab="",
+         ylab="Global Active Power (kW)")
+
+    plot(dat$exact_time2,
+         dat$Voltage,
+         type="l",
+         xlab="datetime",
+         ylab="Voltage")
+
+    plot(dat$exact_time2,
+         dat$Sub_metering_1,
+         type="l",
+         xlab="",
+         ylab="Energy sub metering")
+    lines(dat$exact_time2,
+         dat$Sub_metering_2,
+         type="l",
+         col = "red")
+    lines(dat$exact_time2,
+         dat$Sub_metering_3,
+         type="l",
+         col = "blue")
+    legend(x = "topright",
+           legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),
+           lty = 1,
+           lwd = 2.5,
+           col = c("black","red","blue"))
+    
+    plot(dat$exact_time2,
+         dat$Global_reactive_power,
+         type="l",
+         xlab="datetime")
+#dev.off()
+```
+
+
+
+
+
+
+
+
+
