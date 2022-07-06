@@ -1,0 +1,159 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+author: Zixuan Yu
+output: 
+  html_document:
+    keep_md: true
+---
+
+## Loading and preprocessing the data
+```{r}
+d <- read.csv("C:/REPO/datasciencecoursera/5.Reproducible_Research/activity.csv")
+## d <- read.csv("./5.Reproducible_Research/activity.csv")
+```
+
+## Loading and preprocessing the data
+```{r}
+library(dplyr)
+dat <- d[!is.na(d$steps),]
+dat$date <- as.Date(dat$date)
+daily_df <- dat %>% group_by(date) %>%
+    summarise(daily_steps = sum(steps))
+mean(daily_df$daily_steps);median(daily_df$daily_steps)
+```
+The total number of steps taken per day is 10766.19, and the median is 10765.  
+
+## What is mean total number of steps taken per day?  
+```{r}
+hist(daily_df$daily_steps,
+     main = "Histogram of steps taken per day",
+     xlab = "steps")
+```
+  
+## What is the average daily activity pattern?  
+1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)  
+
+2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?  
+```{r}
+df <- d %>% filter(!is.na(steps))
+df$date2 <- as.Date(df$date)
+dt <- df %>% 
+      group_by(interval) %>% 
+      summarise(avg_steps = mean(steps),
+                median_steps = median(steps))
+head(dt)
+```
+```{r}
+plot(dt$interval,dt$avg_steps,
+     type="l",
+     main = "Average Daily Activity Patern",
+     xlab="Interval",
+     ylab="Steps")
+
+```
+```{r}
+dt[which.max(dt$avg_steps),]
+```
+The 835 interval contains the maximum number of steps.  
+
+## Imputing missing values
+1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)  
+```{r}
+sum(is.na(d$steps))
+```
+  
+2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.   
+```{r}
+## use the mean to replace the missing values
+library(plyr);library(dplyr)
+impute.med <- function(x)replace(x, is.na(x), median(x, na.rm = TRUE))
+```
+
+3. Create a new dataset that is equal to the original dataset but with the missing data filled in.  
+```{r}
+## plyr method
+## d2 <- ddply(d, ~ date, transform, steps = impute.mean(steps))
+
+## dplyr method
+d2 <- d %>%
+        group_by(date) %>%
+        mutate(
+            steps = impute.med(steps)
+        )
+```
+
+4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?   
+```{r}
+daily_df2 <- d2 %>% dplyr::group_by(date) %>%
+    dplyr::summarise(daily_steps = sum(steps))
+mean(daily_df2$daily_steps);median(daily_df2$daily_steps)
+```
+Impute missing data: The total number of steps taken per day is 9354.23, and the median is 10395.  
+Remove missing data: The total number of steps taken per day is 10766.19, and the median is 10765.  
+Using imputed data, we will have smaller median and mean.   
+
+```{r}
+hist(daily_df2$daily_steps,
+     main = "Average Daily Activity Patern (with imputed missing values)",
+     xlab="Interval",
+     ylab="Steps")
+
+```
+
+```{r}
+detach(package:plyr)
+d2 <- data.frame(d2)
+#d2$date <- as.Date(d2$date)
+dt2 <- d2 %>% 
+      group_by(date) %>% 
+      summarise(avg_steps = mean(steps),
+                median_steps = median(steps))
+#dt2
+
+```
+
+
+The values do not differ greatly from the estimates from the first part of the assignment.  
+
+## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+d2$date <- as.Date(d2$date)
+d2 <- d2 %>% mutate(wday = weekdays(date),
+              weekends = ifelse(wday %in% c("Saturday","Sunday" ),1,0))
+table(d2$weekends)
+```
+
+```{r}
+library(dplyr)
+df2 <- d2 %>% group_by(weekends,interval) %>%
+    summarise(mean_steps = mean(steps),
+              median_steps = median(steps))
+df2
+```
+The median steps are the same, but we could infer from the mean that people generally walk more during weekends.  
+
+```{r}
+#df2$weekends = factor(df2$weekends, levels = c(0,1), labels = c("Weekdays", "Weekends"))
+```
+
+```{r}
+library(ggplot2)
+
+df2$weekends = factor(df2$weekends, levels = c(0,1), labels = c("Weekdays", "Weekends"))
+
+ggplot(df2,aes(x = interval, y= mean_steps))+
+    geom_line(col = 'cornflowerblue') +
+    facet_wrap(~weekends, ncol = 1) +
+ labs(x="Interval", y="Number of steps", title = "Activity Patterns between weekdays and weekends")+
+ theme(panel.border = element_blank(), 
+ panel.grid.major = element_blank(),
+ panel.grid.minor = element_blank(),
+ axis.line = element_line(colour = "black"),
+ plot.title = element_text(size = 18, face = "bold"),
+ strip.background = element_rect(fill="moccasin"))
+    
+```
+  
+It seems that people will have more activities in morning during weekends, but have more activities in the afternoons during weekends. 
+
+The median steps are the same, but we could infer from the mean that people generally walk more during weekends.  
