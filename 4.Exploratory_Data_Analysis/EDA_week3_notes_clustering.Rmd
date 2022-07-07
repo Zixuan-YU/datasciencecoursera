@@ -53,7 +53,15 @@ ind
 
 
 
+##### heatmap()
+```{r}
 
+df <- data.frame(x=x, y=y)
+set.seed(143)
+dm <- as.matrix(df)[sample(1:12),]
+heatmap(dm)
+
+```
 
 
 
