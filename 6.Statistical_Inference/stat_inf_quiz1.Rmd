@@ -1,0 +1,23 @@
+---
+title: "stat_inf_quiz1"
+author: "Zixuan Yu"
+date: "7/7/2022"
+output: html_document
+---
+##### Question 1
+```{r}
+0.17-0.12+0.06
+```
+
+##### Question 2
+```{r}
+0.17-0.12+0.06
+```
+
+##### Question 3
+```{r}
+0.75
+```
+
+##### Question 4
+$$\frac{p}{1-p} = \frac{Y}{X}$$
