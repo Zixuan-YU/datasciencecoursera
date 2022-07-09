@@ -1,7 +1,0 @@
----
-title: "week1 Quiz"
-author: "Zixuan Yu"
-date: "7/3/2022"
-output: md_document
----
-test commit
