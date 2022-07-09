@@ -1,0 +1,24 @@
+---
+title: 'Statistical Inference Week4 Notes: Permutation'
+author: "Zixuan Yu"
+date: "7/8/2022"
+output: md_document
+---
+Example of permutation test: rank sum test,
+ Fisher's exact test, ordinary permutation test
+ 
+```{r}
+data("InsectSprays") 
+subdata <- InsectSprays[InsectSprays$spray %in% c("B","C"),] 
+y <- subdata$count
+group <- as.character(subdata$spray)
+testStat <- function(w, g) mean(w[g == "B"]) - mean(w[g == "C"])
+observedStat <- testStat(y,group)
+permutations <- sapply(1:10000, function(i) testStat(y, sample(group)))
+observedStat
+```
+
+```{r}
+mean(permutations > observedStat)
+## We can not generate more extremes difference from permutation test as compared to the observed difference
+```
