@@ -1,0 +1,10 @@
+---
+title: "Statistical Inference Quiz4"
+author: "Zixuan Yu"
+date: "7/9/2022"
+output: md_document
+---
+
+```{r}
+
+```
